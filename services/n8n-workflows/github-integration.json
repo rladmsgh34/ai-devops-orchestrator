@@ -1,0 +1,77 @@
+{
+  "name": "GitHub Integration Workflow",
+  "description": "GitHub webhook 이벤트를 처리하고 AI 분석을 트리거합니다",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "github-webhook",
+        "options": {}
+      },
+      "name": "GitHub Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [240, 300],
+      "webhookId": "github-webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"action\"]}}",
+              "operation": "equal",
+              "value2": "opened"
+            }
+          ]
+        }
+      },
+      "name": "If Push Event",
+      "type": "n8n-nodes-base.if",
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://langchain-api:8000/analyze",
+        "options": {
+          "bodyContentType": "json"
+        },
+        "jsonParameters": true,
+        "bodyParametersJson": {
+          "error_log": "={{$json[\"head_commit\"][\"message\"]}}",
+          "project_config": {
+            "repo_name": "={{$json[\"repository\"][\"name\"]}}",
+            "branch": "={{$json[\"ref\"]}}"
+          },
+          "framework": "nextjs"
+        }
+      },
+      "name": "AI Analysis Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [640, 200]
+    }
+  ],
+  "connections": {
+    "GitHub Webhook": {
+      "main": [
+        [
+          {
+            "node": "If Push Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Push Event": {
+      "main": [
+        [
+          {
+            "node": "AI Analysis Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
