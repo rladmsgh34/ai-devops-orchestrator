@@ -35,6 +35,17 @@
 4. 즉시 커밋 (사실 기록은 빠를수록 정확함)
 5. 케이스가 코드 변경을 요구하면 별도 PR로 진행하고, 그 PR이 이 케이스 파일을 참조
 
+## 사건 발행 → 케이스 변환 절차 (case #002 후보 A)
+
+외부 사건(gwangcheon-shop의 CI 실패, Antigravity가 놓친 검증, 사용자 피드백 등)은 다음 입구로 들어옵니다:
+
+1. **issue 발행**: GitHub issue 템플릿 `Case Report (사건 발행)` 사용 (라벨 `case-candidate` 자동 부착)
+2. **변환**: orchestrator 측에서 issue 내용을 위 "케이스 작성 절차"대로 `cases/NNN-*.md` 파일로 변환
+3. **링크**: 변환 PR이 그 issue를 `Closes #<번호>`로 닫음
+4. **인덱스**: 본 README 하단 인덱스에 행 추가
+
+> 이 절차는 case #002 후보 A의 최소 구현입니다. 후보 B(자동 dispatch)·C(주기적 sweep)는 후속 케이스에서 추가됩니다.
+
 ## 케이스에서 코드로 가는 흐름
 
 ```
@@ -63,4 +74,5 @@ cases/NNN-*.md 작성 (사실만)
 |---|---|---|---|
 | 000 | Bootstrap — 지휘자 모델로 재정의 | ✅ | `CLAUDE.md`, `docs/ARCHITECTURE.md`, `docs/PIPELINE_STATES.md` |
 | 001 | 폐기 모델의 잔존 청구·ghost 서비스 정리 | ✅ | `CHANGELOG.md`, `docker-compose.yml` (nginx 제거), `nginx/` 삭제 |
-| 002 | 케이스 캡처 채널 부재 — 발행 경로 미정의 | ⏳ | (결정 케이스 — 후보 A 즉시 도입, B/C는 후속) |
+| 002 | 케이스 캡처 채널 부재 — 발행 경로 미정의 | 🟡 | 후보 A 도입(case #003에서) / B·C 보류 |
+| 003 | 최초 양방향 정렬 + 실제 CI 사건 캡처 + 후보 A 도입 | ✅ | `.github/ISSUE_TEMPLATE/case-report.md`, `cases/README.md` 절차 추가 |
