@@ -50,6 +50,9 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: PyYAML 설치
+        run: pip install pyyaml
+
       - name: 모든 YAML 파일 syntax 검증
         run: |
           python3 -c "
