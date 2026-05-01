@@ -63,3 +63,4 @@ cases/NNN-*.md 작성 (사실만)
 |---|---|---|---|
 | 000 | Bootstrap — 지휘자 모델로 재정의 | ✅ | `CLAUDE.md`, `docs/ARCHITECTURE.md`, `docs/PIPELINE_STATES.md` |
 | 001 | 폐기 모델의 잔존 청구·ghost 서비스 정리 | ✅ | `CHANGELOG.md`, `docker-compose.yml` (nginx 제거), `nginx/` 삭제 |
+| 002 | 케이스 캡처 채널 부재 — 발행 경로 미정의 | ⏳ | (결정 케이스 — 후보 A 즉시 도입, B/C는 후속) |
