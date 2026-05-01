@@ -175,30 +175,6 @@ services:
       retries: 3
 
   # =============================================================================
-  # Reverse Proxy & Load Balancer (Nginx)
-  # =============================================================================
-  nginx:
-    image: nginx:alpine
-    container_name: ai-devops-nginx
-    ports:
-      - "${HTTP_PORT:-80}:80"
-      - "${HTTPS_PORT:-443}:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
-    depends_on:
-      - n8n
-      - langchain-api
-    networks:
-      - ai-devops-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # =============================================================================
   # Monitoring & Observability (Optional)
   # =============================================================================
   prometheus:

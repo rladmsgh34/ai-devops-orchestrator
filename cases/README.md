@@ -62,3 +62,4 @@ cases/NNN-*.md 작성 (사실만)
 | ID | 제목 | 상태 | 트리거된 변경 |
 |---|---|---|---|
 | 000 | Bootstrap — 지휘자 모델로 재정의 | ✅ | `CLAUDE.md`, `docs/ARCHITECTURE.md`, `docs/PIPELINE_STATES.md` |
+| 001 | 폐기 모델의 잔존 청구·ghost 서비스 정리 | ✅ | `CHANGELOG.md`, `docker-compose.yml` (nginx 제거), `nginx/` 삭제 |

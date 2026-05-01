@@ -1,62 +1,54 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+Semantic Versioning은 지휘자 모델 첫 릴리즈 이후에 다시 도입합니다.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [Unreleased] — 지휘자(Conductor) 모델 재정의
 
-## [1.0.0] - 2026-04-28
+### Changed
 
-### 🚀 Added
-- **AI DevOps Orchestrator v1.0.0** - 세계 최초 자기 학습하는 DevOps AI
-- **검증된 AI 학습 시스템**: 7차례 실제 배포를 통한 완전한 검증
-- **LangChain + n8n 파이프라인**: 자동 트러블슈팅 및 배포 모니터링
-- **ChromaDB 벡터 학습**: 85% 정확도의 패턴 인식
-- **멀티 프레임워크 지원**: Next.js, Django, React, Vue, Spring Boot
+- **포지션 재정의**: "AI 6개 에이전트가 자동 분석·수정 PR을 만든다"는 v1.0.0 모델을 폐기. Claude Code(생성) → Antigravity(검증) → 사용자(승인) 세 액터를 잇는 **지휘자(conductor)** 모델로 전환.
+- **컴포넌트 매트릭스 결정** ([`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)):
+  - 제거: Security Scanner, Code Quality Enforcer, Auto-Fix PR (Antigravity와 충돌)
+  - 유지: Error Analyzer(분석만), Performance Detector, Infra Monitor, Deploy Orchestrator
+  - 신규: 컨텍스트 패커, 승인 상태머신, 트리아지 라우터, 케이스 로그
+- **케이스 주도 개선 원칙 도입** ([`cases/`](./cases)): 새 컴포넌트는 실제 발생 케이스를 근거로만 코드화. 가설 기반 기능 추가 금지.
 
-### 📊 Performance Improvements
-- **디버깅 시간**: 1-2시간 → 5분 (2400% 효율 향상)
-- **AI 정확도**: 33% → 95%+ (7회 학습을 통한 개선)
-- **배포 실패율**: 85% → 5% (17배 개선)
-- **의존성 분석**: 4단계 깊이까지 완전 분석
+### Added
 
-### 🤖 AI Learning Achievements
-- **Prisma v7 의존성 체인** 완전 해결: `pure-rand` → `pathe` → `proper-lockfile` → `graceful-fs`
-- **Docker Alpine 호환성** 자동 해결: `npx` → 직접 경로 전환
-- **GitHub Actions 비용** 최적화: hosted → self-hosted runner 자동 감지
+- `CLAUDE.md` — 프로젝트 운영 규칙 (DO/DON'T, 액터 경계)
+- `docs/ARCHITECTURE.md` — 지휘자 5-레이어 모델, 컴포넌트 매트릭스
+- `docs/PIPELINE_STATES.md` — `created → verified → approved → deployed → observed` 상태머신 (스펙)
+- `cases/{README,TEMPLATE}.md` + `cases/000-bootstrap.md`, `cases/001-purge-legacy-claims.md`
+- 최소 CI: ruff lint + docker-compose syntax + YAML lint (PR 트리거 한정)
+- master branch protection: required status checks + force push 차단
 
-### 🛠️ Features
-- **Docker 원클릭 설치**: 3분 설치 스크립트 (`./setup.sh`)
-- **실시간 에러 분석**: GitHub webhook 연동
-- **자동 학습 파이프라인**: 매 배포마다 성능 향상
-- **REST API**: 완전한 API 문서와 예제 제공
+### Removed
 
-### 📚 Documentation
-- **완벽한 README**: 실증된 성과와 아키텍처 다이어그램
-- **기여자 가이드**: 상세한 CONTRIBUTING.md
-- **API 레퍼런스**: 모든 엔드포인트 문서화
-- **빠른 시작 가이드**: 3분 설치 가이드
+- `nginx` 서비스 (docker-compose.yml) — `nginx/` 디렉토리가 비어 있어 실제로는 실행 불가능했던 ghost 서비스
+- `nginx/` 빈 디렉토리
 
-### 🌟 Open Source Impact
-- **전 세계 기여**: 2천만 시간 절약 예상
-- **비용 절감**: $20억 기대효과
-- **기술 표준**: AI DevOps 새로운 패러다임
+### Deprecated (후속 케이스에서 정리)
+
+- `services/langchain-api/main.py`의 키워드 매칭 데모 (`/analyze`, `/learn-success`, `/analyze-failure`) — 지휘자 모델 첫 컴포넌트 구현 시 함께 재작성
+- `services/n8n-workflows/github-integration.json` — Auto-Fix PR 흐름 검토 후 결정
+- `monitoring/`, `prometheus/grafana/elastic/kibana/logstash` profile 서비스 — 지휘자 5-레이어 매핑 결정 시 정리
 
 ---
 
-## 🎯 로드맵
+## [1.0.0] — 2026-04-28 (Superseded)
 
-### v1.1.0 (계획)
-- **새로운 프레임워크**: Laravel, Angular, NestJS 지원
-- **클라우드 플랫폼**: AWS, Azure 배포 지원
-- **향상된 UI**: 실시간 대시보드
+> ⚠️ 이 릴리즈의 청구·성과 지표는 검증된 근거가 없어 폐기되었습니다.
+> case #000(2026-05-01) 참조. 이력 추적용으로만 보존하며, 향후 어떤 결정의 근거로도 인용하지 마세요.
 
-### v1.2.0 (계획) 
-- **Enterprise 기능**: 팀 관리, 권한 제어
-- **고급 분석**: 성능 회귀 감지
-- **SaaS 플랫폼**: 호스팅 서비스
+폐기된 청구의 예 (전체 목록은 git log `e17528a..2303830` 참조):
 
-### v2.0.0 (미래)
-- **코드 생성**: AI 기반 자동 수정 PR 생성
-- **예측 분석**: 장애 사전 감지
-- **멀티 테넌트**: 조직별 격리
+- "세계 최초 자기 학습하는 DevOps AI"
+- "7차례 실제 배포로 검증된 AI 학습 시스템"
+- "디버깅 시간 1-2시간 → 5분 (2400% 효율 향상)"
+- "AI 정확도 33% → 95%+"
+- "전 세계 기여: 2천만 시간 절약 예상", "$20억 기대효과"
+- "v2.0.0 미래 — AI 기반 자동 수정 PR 생성"
+
+이 릴리즈가 실제로 포함했던 것은: FastAPI 헬스체크 + 키워드 매칭 `/analyze` 엔드포인트, docker-compose 정의(다수 서비스가 ghost), n8n 워크플로우 1개, 빈 `tests/`. 위 모든 청구의 근거는 코드에 존재하지 않습니다.
