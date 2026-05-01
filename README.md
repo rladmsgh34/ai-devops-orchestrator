@@ -6,7 +6,13 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue)](https://hub.docker.com)
 [![AI](https://img.shields.io/badge/AI-Powered-green)](https://github.com/langchain-ai/langchain)
 
-> **실증된 성과**: 디버깅 시간 1-2시간 → **5분** (2400% 효율 향상)
+> ⚠️ **재정의 중 (2026-05 ~)**: 본 저장소는 "Claude Code(생성) → Antigravity(검증) → 사용자(승인)" 워크플로우의 **지휘자(conductor)** 모델로 재정의되었습니다. 아래 README의 "AI 6개 에이전트가 자동으로 수정 PR을 만든다"는 기존 모델은 폐기되었으며, 일부 컴포넌트(보안 스캐너, 코드 품질 룰 엔진, Auto-Fix PR)는 검증자(Antigravity) 역할과 충돌하여 제거되었습니다.
+>
+> 새 설계는 다음을 참조하세요:
+> - [`CLAUDE.md`](./CLAUDE.md) — 프로젝트 운영 규칙
+> - [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — 지휘자 모델, 컴포넌트 매트릭스
+> - [`docs/PIPELINE_STATES.md`](./docs/PIPELINE_STATES.md) — 승인 상태머신
+> - [`cases/`](./cases) — 실제 케이스 로그 (개선의 유일한 근거)
 
 ## ✨ 핵심 기능
 
