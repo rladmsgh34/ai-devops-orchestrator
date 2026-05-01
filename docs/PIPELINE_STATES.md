@@ -112,3 +112,7 @@ guards_passed: [no-main-push, no-secrets, ci-green]
 - 다중 승인자 정책 (필요 시점에 도입)
 
 > **원칙**: 추측으로 결정하지 않는다. 실제 케이스가 강제할 때 결정한다.
+
+## 6. GitHub/Antigravity 매핑 출발점
+
+위의 추상 상태가 GitHub PR 라벨/체크/이벤트와 어떻게 매핑되는지의 가정은 [`INTEGRATIONS.md`](./INTEGRATIONS.md)에 따로 박제했다. 첫 케이스가 그 가정을 강제할 때 같이 수정한다.

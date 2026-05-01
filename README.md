@@ -49,6 +49,7 @@
 - [`CLAUDE.md`](./CLAUDE.md) — 프로젝트 운영 규칙 (DO/DON'T, 액터 경계)
 - [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — 지휘자 5-레이어 모델, 컴포넌트 제거/유지/신규 매트릭스
 - [`docs/PIPELINE_STATES.md`](./docs/PIPELINE_STATES.md) — 변경 → 운영 상태머신, 게이트 차단 시나리오 G1~G5
+- [`docs/INTEGRATIONS.md`](./docs/INTEGRATIONS.md) — Antigravity 인터페이스 가정 + 상태머신 ↔ GitHub 매핑 출발점 (스펙)
 - [`cases/`](./cases) — 실제 케이스 로그 (개선의 유일한 근거)
 - [`docs/QUICK_START.md`](./docs/QUICK_START.md) / [`docs/API_REFERENCE.md`](./docs/API_REFERENCE.md) — (현 데모 코드 기준, 지휘자 모델로 재작성 예정)
 
