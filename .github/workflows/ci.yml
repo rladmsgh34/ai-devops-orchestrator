@@ -1,0 +1,69 @@
+name: CI
+
+# PR 트리거 한정 — 모든 push에 CI를 돌리지 않아 분당 비용을 누적하지 않는다.
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  python-lint:
+    name: Python Lint (ruff)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: ruff 설치
+        run: pip install ruff==0.5.7
+
+      - name: ruff 검사 (services/)
+        run: ruff check services/
+
+      - name: ruff 포맷 검사
+        run: ruff format --check services/
+
+  compose-validate:
+    name: docker-compose 구문 검증
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: docker compose config 검증
+        # config 명령은 변수 치환 후 최종 YAML을 출력 — 구문/필수 키 검증 용도.
+        # 시크릿 변수는 비어 있어도 무방 (이 단계는 schema 검사만 수행).
+        run: docker compose -f docker-compose.yml config --quiet
+
+  yaml-lint:
+    name: YAML 구문 검증 (워크플로우 자체)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: pyyaml 설치
+        run: pip install pyyaml==6.0.2
+
+      - name: 모든 YAML 파일 syntax 검증
+        run: |
+          python3 -c "
+          import yaml, glob, sys
+          ok = True
+          for f in glob.glob('**/*.yml', recursive=True) + glob.glob('**/*.yaml', recursive=True):
+              try:
+                  yaml.safe_load(open(f))
+                  print(f'OK   {f}')
+              except yaml.YAMLError as e:
+                  ok = False
+                  print(f'FAIL {f}: {e}')
+          sys.exit(0 if ok else 1)
+          "
