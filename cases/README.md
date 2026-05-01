@@ -76,3 +76,4 @@ cases/NNN-*.md 작성 (사실만)
 | 001 | 폐기 모델의 잔존 청구·ghost 서비스 정리 | ✅ | `CHANGELOG.md`, `docker-compose.yml` (nginx 제거), `nginx/` 삭제 |
 | 002 | 케이스 캡처 채널 부재 — 발행 경로 미정의 | 🟡 | 후보 A 도입(case #003에서) / B·C 보류 |
 | 003 | 최초 양방향 정렬 + 실제 CI 사건 캡처 + 후보 A 도입 | ✅ | `.github/ISSUE_TEMPLATE/case-report.md`, `cases/README.md` 절차 추가 |
+| 004 | 가드 비대칭 패턴 — admin/user 라우트 도메인 룰 한쪽 누락 | ⏳ | 박제만. Layer 3 코드화는 두 번째 인스턴스 누적 후 |
