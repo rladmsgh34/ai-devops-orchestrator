@@ -58,7 +58,8 @@ references:
 
 - **products** 공개/관리자 측 (이번엔 `isVisible` 잘 됐지만, 새 가드 추가 시 위험)
 - **wishlist** 공개/관리자 측
-- **reviews** — 이미 한 결함 발견됨 (중복 방지, gwangcheon-shop #372)
+- ~~**reviews** — 이미 한 결함 발견됨 (중복 방지, gwangcheon-shop #372)~~
+  - **정정(2026-05-02)**: #372는 트리거 시점 재검증 결과 가드 비대칭이 **아닌** UDI(Undeclared Domain Invariant) 패턴으로 판명됨 — admin 측에 review POST가 부재하여 "비대칭"의 비교 대상 자체가 없음. **case #006**으로 분리. 이 항목은 다음 진짜 가드 비대칭 인스턴스가 잡히면 갱신.
 
 ## 5. 결정
 
@@ -72,7 +73,8 @@ references:
 
 - [ ] **Layer 3 컨텍스트 패커 코드화 트리거 대기** — 본 케이스 단독으로는 가설. case #002 후보 B(자동 dispatch) + 두 번째 가드 비대칭 발견이 누적되면 그때 코드화 케이스 발행
 - [ ] gwangcheon-shop 측 결함 수정은 **gwangcheon-shop #371**에서 별도 처리 (오케스트레이터 범위 밖)
-- [ ] reviews 도메인의 동일 패턴(gwangcheon-shop #372) 추적 — 두 번째 인스턴스가 되면 누적 카운트로 사용
+- ~~[ ] reviews 도메인의 동일 패턴(gwangcheon-shop #372) 추적 — 두 번째 인스턴스가 되면 누적 카운트로 사용~~
+  - **정정(2026-05-02)**: #372는 가드 비대칭이 아닌 UDI 패턴으로 case #006에 분리됨. 본 케이스의 누적 카운트에서 제외.
 
 ## 6. 후속 작업
 
