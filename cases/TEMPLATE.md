@@ -11,6 +11,11 @@ related_components: [layer-1-context | layer-2-triage | layer-3-packing | layer-
 
 # Case NNN — <제목>
 
+**TL;DR.** <한 문단(2~3문장) 요약. 사건 + 학습의 핵심. ChromaDB 미구현 상태에서 사실상 검색 표면이다 — case #008 결정.>
+
+> §1~§7은 **선택**. TL;DR로 충분하면 §8(학습)만 채우고 나머지는 생략 가능 (case #008).
+> 결정 케이스(`state: pending-decision`)는 §4 옵션·§5 사용자 결정이 **필수**.
+
 ## 1. 무슨 일이 있었나 (사실)
 
 <시간 순서대로 일어난 일만. 해석·의견은 다음 절에서.>
