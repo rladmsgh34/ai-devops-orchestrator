@@ -126,3 +126,4 @@ related_cases: [NNN, ...]  # 누적된 인스턴스 케이스 ID
 | 006 | 미정의 도메인 인보리언트(UDI) — 룰이 코드·스키마 어디에도 명시되지 않은 패턴 | ⏳ | 박제만. case #005 절차의 첫 자기 검증 결과로 case #004에서 분리 |
 | 007 | 투기적 위성 저장소 — 근거 없는 단정적 주장(결정 케이스) | ✅ | (a) 코드화 완료(2026-05-02). 4개 위성 repo archive 완료(`gh repo archive`), 사용자 5월 1일 정정 PR과 archive notice 헤더 2단 누적 보존, case #005 §6.1·§6.2 양식 보완 본 PR로 반영 |
 | 008 | 케이스 양식 — 본문 두께 vs 검색 가능성 (결정 케이스) | ✅ | (a) TL;DR 강제 + 본문 선택. `cases/TEMPLATE.md` + `cases/README.md` 양식 정의 갱신. 본 케이스가 첫 적용 |
+| 009 | 선언된 컴포넌트 vs 실측 괴리 — 지휘자 자기 자신의 Unbacked Self-Claim (결정 케이스) | 🔨 | (a) 부분 실체화 + 격리 결정(2026-05-02). 후속 PR로 docker-compose 8 컨테이너에 `profiles: legacy-demo` 적용, README/INTEGRATIONS.md 갱신. case #004 두 번째 인스턴스 시점에 langchain-api + chromadb 격리 해제 |
