@@ -12,6 +12,7 @@ services:
       context: ./services/langchain-api
       dockerfile: Dockerfile
     container_name: ai-devops-langchain-api
+    profiles: ["legacy-demo"]
     ports:
       - "${LANGCHAIN_API_PORT:-8000}:8000"
     environment:
@@ -63,6 +64,7 @@ services:
   n8n:
     image: n8nio/n8n:latest
     container_name: ai-devops-n8n
+    profiles: ["legacy-demo"]
     ports:
       - "${N8N_PORT:-5678}:5678"
     environment:
@@ -113,6 +115,7 @@ services:
   chromadb:
     image: chromadb/chroma:latest
     container_name: ai-devops-chromadb
+    profiles: ["legacy-demo"]
     ports:
       - "${CHROMADB_PORT:-8001}:8000"
     environment:
@@ -137,6 +140,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: ai-devops-redis
+    profiles: ["legacy-demo"]
     ports:
       - "${REDIS_PORT:-6379}:6379"
     command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
@@ -157,6 +161,7 @@ services:
   postgres:
     image: postgres:15-alpine
     container_name: ai-devops-postgres
+    profiles: ["legacy-demo"]
     environment:
       - POSTGRES_DB=n8n
       - POSTGRES_USER=n8n

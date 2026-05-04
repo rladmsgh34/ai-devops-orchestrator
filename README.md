@@ -16,7 +16,7 @@
 | 지휘자 5-레이어 아키텍처 (`docs/ARCHITECTURE.md`) | ✅ 확정 |
 | 승인 상태머신 (`docs/PIPELINE_STATES.md`) | ✅ 스펙 확정 / ❌ 미구현 |
 | 케이스 로그 (`cases/`) | ✅ 워크플로우 시동 (case #000 resolved) |
-| FastAPI `/analyze` 키워드 매칭 데모 | ⚠️ 기존 코드 잔존 (지휘자 모델로 재작성 예정) |
+| FastAPI `/analyze` 키워드 매칭 데모 | ⚠️ 기존 코드 잔존 (`docker-compose --profile legacy-demo` opt-in, 기본 비활성 — case #009) |
 | Layer 1 컨텍스트 패커 | ❌ 미구현 (첫 케이스 대기) |
 | Layer 2 트리아지 라우터 | ❌ 미구현 |
 | Layer 3 컨텍스트 패킹 | ❌ 미구현 |
@@ -59,11 +59,11 @@
 
 ## 로컬 실행 (현 데모 코드)
 
-현 시점의 `services/langchain-api/main.py`는 키워드 매칭 기반 데모이며, 지휘자 모델 컴포넌트는 아직 포함되지 않습니다.
+현 시점의 `services/langchain-api/main.py`는 키워드 매칭 기반 데모이며, 지휘자 모델 컴포넌트는 아직 포함되지 않습니다. **case #009 결정에 따라 데모 컨테이너(langchain-api, n8n, chromadb, redis, postgres)는 기본 `up`에서 비활성**이며, 명시적 opt-in으로만 기동됩니다. 첫 실체화 진입은 case #004 두 번째 인스턴스 누적 시점입니다 (그 시점에 langchain-api + chromadb만 격리 해제).
 
 ```bash
 cp .env.example .env  # 필요한 키만 채움 (없으면 데모 엔드포인트는 동작)
-docker-compose up -d
+docker-compose --profile legacy-demo up -d  # 데모 opt-in
 ```
 
 - LangChain API: http://localhost:8000
