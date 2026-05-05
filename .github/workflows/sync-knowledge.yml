@@ -1,0 +1,31 @@
+name: Sync Knowledge Base
+
+# cases/ 폴더의 변경 사항을 감지하여 ChromaDB 인덱스를 최신화합니다.
+
+on:
+  push:
+    paths:
+      - 'cases/*.md'
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  sync-chroma:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python 설정
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 의존성 설치
+        run: pip install chromadb
+
+      - name: ChromaDB 인덱싱 실행
+        env:
+          CHROMADB_HOST: ${{ secrets.CHROMADB_HOST }}
+          CHROMADB_PORT: ${{ secrets.CHROMADB_PORT }}
+        run: python3 scripts/index_cases.py

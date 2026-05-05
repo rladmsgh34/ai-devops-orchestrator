@@ -21,7 +21,7 @@
 |---|---|
 | 실제 발생한 운영 사고 | 가설적 시나리오 |
 | Claude Code가 같은 실수 반복 | "이런 게 있으면 좋겠다" |
-| Antigravity가 놓친 회귀 | 일반적 베스트 프랙티스 |
+| Antigravity가 놓친 검증 | 일반적 베스트 프랙티스 |
 | main 직접 푸시 시도 | 외부 블로그에서 본 패턴 |
 | 검증 누락 PR | 다른 회사 사례 |
 | 사용자 승인 우회 시도 | 미래 트렌드 |
@@ -106,12 +106,14 @@ related_cases: [NNN, ...]  # 누적된 인스턴스 케이스 ID
 - `decided-implement` → 🔨 (코드화 PR과 함께 ✅로 전환)
 - `decided-observe` → ⏳
 - `decided-wontfix` → ❌
+- `partial` → 🟡 (부분 도입)
 
 ## 케이스 인덱스 유지
 
 - 신규 케이스 작성 시 이 README 하단의 인덱스에 한 줄 추가
-- 해결된 케이스는 인덱스에서 ✅ 표시
+- 해결된 케이스는 인덱에서 ✅ 표시
 - 보류/관찰 중인 케이스는 ⏳
+- 부분 도입된 케이스는 🟡
 
 ## 인덱스
 
@@ -128,4 +130,13 @@ related_cases: [NNN, ...]  # 누적된 인스턴스 케이스 ID
 | 008 | 케이스 양식 — 본문 두께 vs 검색 가능성 (결정 케이스) | ✅ | (a) TL;DR 강제 + 본문 선택. `cases/TEMPLATE.md` + `cases/README.md` 양식 정의 갱신. 본 케이스가 첫 적용 |
 | 009 | 선언된 컴포넌트 vs 실측 괴리 — 지휘자 자기 자신의 Unbacked Self-Claim (결정 케이스) | ✅ | (a) 부분 실체화 + 격리 결정(2026-05-02). `docker-compose.yml` 5개 데모 컨테이너에 `profiles: legacy-demo` 적용(기본 `up` 비활성), `README.md` "현 상태"·"로컬 실행" 갱신, `docs/INTEGRATIONS.md` §6 가정 유지 결정 반영. case #004 두 번째 인스턴스 시점에 langchain-api + chromadb 격리 해제 |
 | 010 | 풀 루프 액터 파이프라인 — Gemini 이슈/검토 + Claude Code 개발/배포 (결정 케이스) | ⏳ | (b) `decided-observe` — 코드 0줄. 풀 루프 설계만 박제, §6 트리거 임계점 충족 시 별도 케이스 발행. case #007/009 family의 3차 인스턴스를 *발생 직전*에 결정으로 회피한 첫 사례 |
-| 011 | 트리거 발화 메커니즘 부재 — 추천에 대한 추천 (결정 케이스, family 4차) | ⏳ | (b) `decided-observe`(2026-05-05) — 코드 0줄. case #010 §8 예언("결정 본문이 룰 인용만으로 완전 도출되는 단계")의 첫 실측 검증. §7 트리거 임계점 충족 시 별도 케이스 발행 (5/10 case #010 deadline 도래가 §7.1 첫 후보) |
+| 011 | CONTRIBUTING.md 예제 코드와 실체 괴리 | ✅ | `CONTRIBUTING.md` 구버전 예제 코드 제거 및 아키텍처 동기화 |
+| 012 | gwangcheon-shop pnpm-lock.yaml 불일치로 인한 빌드 실패 | ✅ | `pnpm-lock.yaml` 동기화 및 배포 파이프라인 복구 |
+| 013 | ai-dev-loop-analyzer Production Smoke 테스트 실패 | ✅ | `scripts/smoke.sh` 생성 및 워크플로우 경로 수정 |
+| 014 | devops-error-analyzer 명칭과 실체의 괴리 해결 (Honesty) | ✅ | 저장소 개명 (`devops-error-analyzer`) 및 지휘자 모델 정체성 반영 |
+| 015 | Layer 4 검증 게이트 실체화 — 빌드 및 테스트 보호 | ✅ | `langchain-api` 격리 해제 및 `/verify/gate` 엔드포인트 구현 |
+| 016 | Layer 2 트리아지 라우터 자동화 — 사건 자동 인입 | ✅ | `.github/workflows/triage-router.yml` 자동 박제 파이프라인 구축 |
+| 017 | 단계 0 기획 에이전트 실체화 — 자율 개선 루프 시동 | ✅ | `scripts/planning_agent.py` 구현 및 Gemini 분석 제안 기능 추가 |
+| 018 | gwangcheon-shop CI와 오케스트레이터 Layer 4 연동 | ✅ | 위성 프로젝트 CI에서 검증 게이트 호출 및 결과 리포팅 루프 완성 |
+| 019 | Layer 1 컨텍스트 패커 실체화 — 과거 사고 사례 주입 | ⏳ | [TBD] |
+| 020 | Layer 3 컨텍스트 패킹 실체화 — 검증자용 사고 맥락 번들링 | ⏳ | [TBD] |

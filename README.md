@@ -16,14 +16,14 @@
 | 지휘자 5-레이어 아키텍처 (`docs/ARCHITECTURE.md`) | ✅ 확정 |
 | 승인 상태머신 (`docs/PIPELINE_STATES.md`) | ✅ 스펙 확정 / ❌ 미구현 |
 | 케이스 로그 (`cases/`) | ✅ 워크플로우 시동 (case #000 resolved) |
-| FastAPI `/analyze` 키워드 매칭 데모 | ⚠️ 기존 코드 잔존 (`docker-compose --profile legacy-demo` opt-in, 기본 비활성 — case #009) |
-| Layer 1 컨텍스트 패커 | ❌ 미구현 (첫 케이스 대기) |
-| Layer 2 트리아지 라우터 | ❌ 미구현 |
+| FastAPI `/analyze` 키워드 매칭 데모 | ⚠️ 기존 코드 잔존 (기본 활성 — 지휘자 모델 통합 중) |
+| Layer 1 컨텍스트 패커 | ✅ 구현 완료 (과거 사례 기반 컨텍스트 주입) |
+| Layer 2 트리아지 라우터 | 🤖 자동화 완료 (사건 자동 박제 파이프라인) |
 | Layer 3 컨텍스트 패킹 | ❌ 미구현 |
-| Layer 4 검증 게이트 | ❌ 미구현 |
+| Layer 4 검증 게이트 | ✅ 구현 및 gwangcheon-shop 연동 완료 |
 | Layer 5 승인+배포 게이트 | ❌ 미구현 |
-| ChromaDB 환류 루프 | ❌ 미구현 |
-| 테스트 (`tests/`) | ❌ 비어있음 |
+| ChromaDB 환류 루프 | ✅ 기초 통합 완료 (Layer 1 검색 및 Layer 4 분석 활용) |
+| 테스트 (`tests/`) | 🟡 기초 유닛 테스트 도입 |
 | 최소 CI (ruff + compose + yaml) | ✅ PR-only 트리거 |
 
 > 본 저장소는 **이전 버전(README 기준)에서 "AI 6개 에이전트가 자동 분석·수정 PR을 만든다"는 모델**을 폐기했습니다. 그 모델은 Claude Code(생성)·Antigravity(검증) 역할과 정면으로 충돌합니다. 자세한 폐기 결정은 [`cases/000-bootstrap.md`](./cases/000-bootstrap.md), 컴포넌트 매트릭스는 [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) 참조.
@@ -47,28 +47,27 @@
 ## 문서 맵
 
 - [`CLAUDE.md`](./CLAUDE.md) — 프로젝트 운영 규칙 (DO/DON'T, 액터 경계)
-- [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — 지휘자 5-레이어 모델, 컴포넌트 제거/유지/신규 매트릭스
+- [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — 지휘자 모델 설계
 - [`docs/PIPELINE_STATES.md`](./docs/PIPELINE_STATES.md) — 변경 → 운영 상태머신, 게이트 차단 시나리오 G1~G5
-- [`docs/INTEGRATIONS.md`](./docs/INTEGRATIONS.md) — Antigravity 인터페이스 가정 + 상태머신 ↔ GitHub 매핑 출발점 (스펙)
+- [`docs/INTEGRATIONS.md`](./docs/INTEGRATIONS.md) — 외부 시스템 연동 및 상태 매핑 명세
 - [`cases/`](./cases) — 실제 케이스 로그 (개선의 유일한 근거)
-- [`docs/QUICK_START.md`](./docs/QUICK_START.md) / [`docs/API_REFERENCE.md`](./docs/API_REFERENCE.md) — (현 데모 코드 기준, 지휘자 모델로 재작성 예정)
+- [`docs/QUICK_START.md`](./docs/QUICK_START.md) / [`docs/API_REFERENCE.md`](./docs/API_REFERENCE.md) — 최신 가이드라인 및 API 명세
 
 ## 1차 적용 대상
 
 **gwangcheon-shop** — 본 저장소의 지휘자 모델은 이 프로젝트에서 검증된 후 다른 프로젝트로 확장합니다.
 
-## 로컬 실행 (현 데모 코드)
+## 로컬 실행
 
-현 시점의 `services/langchain-api/main.py`는 키워드 매칭 기반 데모이며, 지휘자 모델 컴포넌트는 아직 포함되지 않습니다. **case #009 결정에 따라 데모 컨테이너(langchain-api, n8n, chromadb, redis, postgres)는 기본 `up`에서 비활성**이며, 명시적 opt-in으로만 기동됩니다. 첫 실체화 진입은 case #004 두 번째 인스턴스 누적 시점입니다 (그 시점에 langchain-api + chromadb만 격리 해제).
+현재 `services/langchain-api/main.py`는 지휘자 모델의 핵심 엔드포인트를 제공합니다.
 
 ```bash
-cp .env.example .env  # 필요한 키만 채움 (없으면 데모 엔드포인트는 동작)
-docker-compose --profile legacy-demo up -d  # 데모 opt-in
+cp .env.example .env
+docker-compose up -d
 ```
 
-- LangChain API: http://localhost:8000
-- n8n: http://localhost:5678
-- ChromaDB: http://localhost:8001
+- **LangChain API**: http://localhost:8000
+- **ChromaDB**: http://localhost:8001
 
 ## 라이선스
 
