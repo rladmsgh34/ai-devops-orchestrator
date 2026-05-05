@@ -5,9 +5,9 @@ import chromadb
 from pathlib import Path
 
 # ChromaDB 설정
-CHROMA_HOST = os.getenv("CHROMADB_HOST", "localhost")
-CHROMA_PORT = int(os.getenv("CHROMADB_PORT", 8000))
-COLLECTION_NAME = os.getenv("CHROMADB_COLLECTION_NAME", "devops_knowledge")
+CHROMA_HOST = os.getenv("CHROMADB_HOST") or "localhost"
+CHROMA_PORT = int(os.getenv("CHROMADB_PORT") or 8000)
+COLLECTION_NAME = os.getenv("CHROMADB_COLLECTION_NAME") or "devops_knowledge"
 
 def index_cases():
     print(f"🤖 ChromaDB 인덱싱 시작: {COLLECTION_NAME}")
