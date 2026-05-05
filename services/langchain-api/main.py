@@ -133,7 +133,7 @@ async def verify_bundle(request: VerifyBundleRequest):
     if not historical_notes:
         bundle = "## ✅ 검증 번들\n특이사항 없음. 일반적인 코드 리뷰 및 테스트를 수행하세요."
     else:
-        bundle = f"## 🚨 검증 집중 영역 (과거 사고 기반)\n\n"
+        bundle = "## 🚨 검증 집중 영역 (과거 사고 기반)\n\n"
         bundle += "\n".join(historical_notes)
         bundle += "\n\n### 📌 추천 점검 항목:\n"
         bundle += "\n".join([f"- {area}" for area in focus_areas])
