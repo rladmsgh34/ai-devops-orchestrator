@@ -1,5 +1,5 @@
 ---
-id: 011
+id: 019
 title: CONTRIBUTING.md 예제 코드와 실체 괴리
 date: 2026-05-05
 project: ai-devops-orchestrator
@@ -9,7 +9,7 @@ related_pr:
 related_components: [docs]
 ---
 
-# Case 011 — CONTRIBUTING.md 예제 코드와 실체 괴리
+# Case 019 — CONTRIBUTING.md 예제 코드와 실체 괴리
 
 **TL;DR.** `CONTRIBUTING.md`에 남아 있던 구버전(AI 에이전트 자동 수정 모델)의 예제 코드를 제거하고, 새 지휘자(Conductor) 모델 및 케이스 주도 원칙에 맞춰 문서를 동기화함. 문서의 정직성을 회복하고 기여자 혼란을 차단함.
 
