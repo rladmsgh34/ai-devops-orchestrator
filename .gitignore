@@ -1,0 +1,11 @@
+# 별도 git repo 클론 (gwangcheon-shop 등 다른 프로젝트 작업용)
+worktrees/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# 환경변수 (시크릿 노출 방지 — 전역 CLAUDE.md 룰)
+.env
+.env.local

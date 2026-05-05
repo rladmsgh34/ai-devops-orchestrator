@@ -11,7 +11,7 @@ related_components: []
 
 # Case 016 — Layer 2 트리아지 라우터 자동화 — 사건 자동 인입
 
-**TL;DR.** [이슈 요약 및 핵심 통찰을 작성하세요]
+**TL;DR.** Case #002 후보 A(수동 발행 + ingest_case.py)는 사람이 직접 로그 복사 필요. 위성 프로젝트 사건이 빈번해져 자동 감지가 필요해짐. (a) Layer 2 자동 인입 채널(후보 B) 결정 — `repository_dispatch` 수신 워크플로우 + `ingest_case.py` 자동 호출 + 광천샵 dispatch 가이드 작성.
 
 ## 1. 무슨 일이 있었나 (사실)
 

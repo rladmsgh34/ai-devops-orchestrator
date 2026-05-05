@@ -130,7 +130,7 @@ related_cases: [NNN, ...]  # 누적된 인스턴스 케이스 ID
 | 008 | 케이스 양식 — 본문 두께 vs 검색 가능성 (결정 케이스) | ✅ | (a) TL;DR 강제 + 본문 선택. `cases/TEMPLATE.md` + `cases/README.md` 양식 정의 갱신. 본 케이스가 첫 적용 |
 | 009 | 선언된 컴포넌트 vs 실측 괴리 — 지휘자 자기 자신의 Unbacked Self-Claim (결정 케이스) | ✅ | (a) 부분 실체화 + 격리 결정(2026-05-02). `docker-compose.yml` 5개 데모 컨테이너에 `profiles: legacy-demo` 적용(기본 `up` 비활성), `README.md` "현 상태"·"로컬 실행" 갱신, `docs/INTEGRATIONS.md` §6 가정 유지 결정 반영. case #004 두 번째 인스턴스 시점에 langchain-api + chromadb 격리 해제 |
 | 010 | 풀 루프 액터 파이프라인 — Gemini 이슈/검토 + Claude Code 개발/배포 (결정 케이스) | ⏳ | (b) `decided-observe` — 코드 0줄. 풀 루프 설계만 박제, §6 트리거 임계점 충족 시 별도 케이스 발행. case #007/009 family의 3차 인스턴스를 *발생 직전*에 결정으로 회피한 첫 사례 |
-| 011 | 트리거 발화 메커니즘 부재 — 추천에 대한 추천 (결정 케이스) | ⏳ | (b) `decided-observe`(2026-05-05) — 코드 0줄. §7 트리거 임계점 충족 시 별도 케이스 발행 (origin/master에 머지됨, PR #20) |
+| 011 | 트리거 발화 메커니즘 부재 — 추천에 대한 추천 (결정 케이스, family 4차) | ⏳ | (b) `decided-observe`(2026-05-05) — 코드 0줄. case #010 §8 예언("결정 본문이 룰 인용만으로 완전 도출되는 단계")의 첫 실측 검증. §7 트리거 임계점 충족 시 별도 케이스 발행 (5/10 case #010 deadline 도래가 §7.1 첫 후보) |
 | 012 | gwangcheon-shop pnpm-lock.yaml 불일치로 인한 빌드 실패 | ✅ | `pnpm-lock.yaml` 동기화 및 배포 파이프라인 복구 |
 | 013 | ai-dev-loop-analyzer Production Smoke 테스트 실패 | ✅ | `scripts/smoke.sh` 생성 및 워크플로우 경로 수정 |
 | 014 | langchain-devops-analyzer 명칭과 실체의 괴리 (Honesty) | ✅ | 저장소 개명 (`devops-error-analyzer`) 및 지휘자 모델 정체성 반영 |

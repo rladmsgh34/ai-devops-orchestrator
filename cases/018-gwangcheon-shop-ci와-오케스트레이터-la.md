@@ -11,7 +11,7 @@ related_components: []
 
 # Case 018 — gwangcheon-shop CI와 오케스트레이터 Layer 4 연동
 
-**TL;DR.** [이슈 요약 및 핵심 통찰을 작성하세요]
+**TL;DR.** Case #015에서 실체화된 Layer 4 검증 게이트가 위성 프로젝트(광천샵)에서 호출되지 않는 상태. (a) 광천샵 워크플로우 수정 — 빌드 실패 시 오케스트레이터 `/verify/gate` 호출 + 분석 결과를 GitHub Action 요약/코멘트로 출력. case #015의 후속 연결부.
 
 ## 1. 무슨 일이 있었나 (사실)
 

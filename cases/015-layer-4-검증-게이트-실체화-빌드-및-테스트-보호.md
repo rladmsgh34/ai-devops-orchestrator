@@ -11,7 +11,7 @@ related_components: []
 
 # Case 015 — Layer 4 검증 게이트 실체화 — 빌드 및 테스트 보호 (결정 케이스)
 
-**TL;DR.** [이슈 요약 및 핵심 통찰을 작성하세요]
+**TL;DR.** Case #012(광천샵 빌드 실패) + #013(ai-dev-loop-analyzer 테스트 실패) 2회 누적으로 case #005 트리거 룰 충족. (a) Layer 4 검증 게이트 실체화 결정 — langchain-api/chromadb 격리 해제, 광천샵 CI에 검증 호출 추가, 회귀 검증 로직 구현.
 
 ## 1. 무슨 일이 있었나 (사실)
 
