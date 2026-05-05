@@ -21,11 +21,30 @@ jobs:
       - name: ruff 설치
         run: pip install ruff==0.5.7
 
-      - name: ruff 검사 (services/)
-        run: ruff check services/
+      - name: ruff 검사
+        run: ruff check services/ scripts/ tests/
 
       - name: ruff 포맷 검사
-        run: ruff format --check services/
+        run: ruff format --check services/ scripts/ tests/
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 의존성 설치
+        run: |
+          if [ -f services/langchain-api/requirements.txt ]; then
+            pip install -r services/langchain-api/requirements.txt
+          fi
+      - name: 테스트 실행
+        run: |
+          export PYTHONPATH=$PYTHONPATH:.
+          python3 tests/test_ingest_case.py
 
   compose-validate:
     name: docker-compose 구문 검증

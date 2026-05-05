@@ -1,0 +1,50 @@
+name: Triage Router (Layer 2)
+
+# 위성 프로젝트(gwangcheon-shop 등)에서 보내는 repository_dispatch 이벤트를 수신하여
+# 자동으로 케이스(cases/NNN-*.md)를 생성합니다. (Case #016)
+
+on:
+  repository_dispatch:
+    types: [capture-incident]
+
+jobs:
+  auto-ingest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 사건 데이터 추출 및 박제
+        run: |
+          # 페이로드를 임시 파일로 저장
+          echo '${{ toJson(github.event.client_payload) }}' > incident_payload.json
+          
+          # ingest_case.py를 통해 자동 박제
+          # (scripts/ingest_case.py가 stdin으로부터 제목과 내용을 읽는 특성을 활용)
+          
+          INCIDENT_TITLE="[AUTO] ${{ github.event.client_payload.project }} - ${{ github.event.client_payload.event_type }} 실패"
+          INCIDENT_BODY=$(cat <<EOF
+          ## 1. 사실 (자동 인입)
+          - 프로젝트: ${{ github.event.client_payload.project }}
+          - 이벤트: ${{ github.event.client_payload.event_type }}
+          - 상태: ${{ github.event.client_payload.status }}
+          - 로그 요약: ${{ github.event.client_payload.log_snippet }}
+          - 런타임: ${{ github.event.client_payload.run_url }}
+          
+          ## 2. 메타데이터
+          \`\`\`json
+          $(cat incident_payload.json)
+          \`\`\`
+          EOF
+          )
+          
+          echo -e "title: $INCIDENT_TITLE\n\n$INCIDENT_BODY" | python3 scripts/ingest_case.py
+
+      - name: 변경사항 커밋 및 푸시
+        run: |
+          git config --global user.name "ai-devops-conductor[bot]"
+          git config --global user.email "ai-devops-conductor[bot]@users.noreply.github.com"
+          git add cases/
+          git commit -m "chore: auto-ingest incident from ${{ github.event.client_payload.project }} (case #016)"
+          git push origin master

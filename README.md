@@ -16,14 +16,14 @@
 | 지휘자 5-레이어 아키텍처 (`docs/ARCHITECTURE.md`) | ✅ 확정 |
 | 승인 상태머신 (`docs/PIPELINE_STATES.md`) | ✅ 스펙 확정 / ❌ 미구현 |
 | 케이스 로그 (`cases/`) | ✅ 워크플로우 시동 (case #000 resolved) |
-| FastAPI `/analyze` 키워드 매칭 데모 | ⚠️ 기존 코드 잔존 (`docker-compose --profile legacy-demo` opt-in, 기본 비활성 — case #009) |
+| FastAPI `/analyze` 키워드 매칭 데모 | ⚠️ 기존 코드 잔존 (기본 활성 — Layer 4 실체화 진행 중) |
 | Layer 1 컨텍스트 패커 | ❌ 미구현 (첫 케이스 대기) |
 | Layer 2 트리아지 라우터 | ❌ 미구현 |
 | Layer 3 컨텍스트 패킹 | ❌ 미구현 |
-| Layer 4 검증 게이트 | ❌ 미구현 |
+| Layer 4 검증 게이트 | 🏗️ 실체화 진행 중 (Case #015) |
 | Layer 5 승인+배포 게이트 | ❌ 미구현 |
-| ChromaDB 환류 루프 | ❌ 미구현 |
-| 테스트 (`tests/`) | ❌ 비어있음 |
+| ChromaDB 환류 루프 | ✅ 기초 통합 완료 (Layer 4용 격리 해제) |
+| 테스트 (`tests/`) | 🟡 기초 유닛 테스트 도입 |
 | 최소 CI (ruff + compose + yaml) | ✅ PR-only 트리거 |
 
 > 본 저장소는 **이전 버전(README 기준)에서 "AI 6개 에이전트가 자동 분석·수정 PR을 만든다"는 모델**을 폐기했습니다. 그 모델은 Claude Code(생성)·Antigravity(검증) 역할과 정면으로 충돌합니다. 자세한 폐기 결정은 [`cases/000-bootstrap.md`](./cases/000-bootstrap.md), 컴포넌트 매트릭스는 [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) 참조.

@@ -12,7 +12,6 @@ services:
       context: ./services/langchain-api
       dockerfile: Dockerfile
     container_name: ai-devops-langchain-api
-    profiles: ["legacy-demo"]
     ports:
       - "${LANGCHAIN_API_PORT:-8000}:8000"
     environment:
@@ -115,7 +114,6 @@ services:
   chromadb:
     image: chromadb/chroma:latest
     container_name: ai-devops-chromadb
-    profiles: ["legacy-demo"]
     ports:
       - "${CHROMADB_PORT:-8001}:8000"
     environment:
@@ -140,7 +138,6 @@ services:
   redis:
     image: redis:7-alpine
     container_name: ai-devops-redis
-    profiles: ["legacy-demo"]
     ports:
       - "${REDIS_PORT:-6379}:6379"
     command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru

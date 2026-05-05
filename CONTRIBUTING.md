@@ -296,34 +296,37 @@ pytest --cov=src --cov-report=html
 - **Migration guides**: For breaking changes
 - **Troubleshooting**: Common issues and solutions
 
-## 🎨 Code Style Guidelines
+## 🎨 작업 및 설계 원칙
 
-### Python (Backend/AI)
+이 프로젝트는 **지휘자(Conductor) 모델**을 따르며, 모든 개발은 **케이스 주도(Case-Driven)**로 이루어집니다.
+
+### 지휘자 모델 (Conductor Model)
+- 오케스트레이터는 코드를 직접 생성하기보다 액터(Claude Code, Antigravity, 사용자) 사이의 컨텍스트와 상태를 관리하는 역할을 합니다.
+- 자세한 설계는 `docs/ARCHITECTURE.md`를 참조하세요.
+
+### 케이스 주도 개발 (Case-Driven Development)
+- 새로운 기능을 추가하거나 기존 기능을 변경할 때는 반드시 `cases/`에 실제 발생 근거(사례)가 먼저 기록되어야 합니다.
+- 가설이나 추측에 기반한 기능 추가는 금지됩니다.
+
+### 코드 스타일 가이드 (Python)
+- **Ruff**: 린팅 및 포맷팅에 Ruff를 사용합니다.
+- **PEP 8**: Python 코드 스타일 가이드를 준수합니다.
+- **Type Hints**: 모든 함수 시그니처에 타입 힌트를 사용합니다.
+
 ```python
-# Use Black formatter and flake8 linter
-# Follow PEP 8 and type hints
-from typing import List, Optional, Dict, Any
+# ruff check .
+# ruff format .
+from typing import Dict, Any
 
-async def analyze_error_pattern(
-    error_log: str,
-    project_config: Dict[str, Any],
-    similarity_threshold: float = 0.8
-) -> Optional[AnalysisResult]:
-    """Analyze error patterns using vector similarity.
-    
-    Args:
-        error_log: Raw error message from build/deploy
-        project_config: Project-specific configuration
-        similarity_threshold: Minimum similarity for pattern match
-        
-    Returns:
-        Analysis result if pattern found, None otherwise
-        
-    Raises:
-        ValidationError: If error_log format is invalid
-    """
+async def context_packer(
+    file_path: str,
+    past_cases: list[Dict[str, Any]]
+) -> str:
+    """ChromaDB에서 조회된 과거 사례를 프롬프트용으로 패킹합니다."""
+    # Implementation follows the case-driven logic
     pass
 ```
+
 
 ### TypeScript (Frontend)
 ```typescript
