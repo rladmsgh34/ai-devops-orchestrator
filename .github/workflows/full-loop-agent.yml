@@ -1,0 +1,78 @@
+name: Full Loop Agent (Case #023)
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_title:
+        description: '이슈 제목'
+        required: true
+      issue_body:
+        description: '이슈 본문'
+        required: true
+      context_bundle:
+        description: '지휘자 컨텍스트 (과거 사례)'
+        required: false
+        default: '✅ 알려진 과거 회귀 패턴이 없습니다.'
+      discord_reply_url:
+        description: 'Discord 알림 URL'
+        required: false
+
+jobs:
+  agent-develop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: GitHub 이슈 생성
+        id: create-issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_URL=$(gh issue create --title "${{ github.event.inputs.issue_title }}" --body "${{ github.event.inputs.issue_body }}")
+          ISSUE_NUM=$(echo $ISSUE_URL | grep -oE "[0-9]+$")
+          echo "ISSUE_NUM=$ISSUE_NUM" >> $GITHUB_ENV
+          echo "ISSUE_URL=$ISSUE_URL" >> $GITHUB_ENV
+
+      - name: 브랜치 생성
+        run: |
+          BRANCH_NAME="feature/issue-${{ env.ISSUE_NUM }}"
+          git checkout -b $BRANCH_NAME
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+
+      - name: Claude Code 설치
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Claude Code 구동 (코드 생성)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          # Claude에게 전달할 프롬프트 구성
+          PROMPT="Task: ${{ github.event.inputs.issue_title }}
+          Description: ${{ github.event.inputs.issue_body }}
+
+          Historical Context:
+          ${{ github.event.inputs.context_bundle }}
+
+          Please implement the changes directly, add tests, and commit with a clear message."
+          
+          claude -p "$PROMPT" --dangerously-skip-permissions
+
+      - name: PR 생성
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push origin ${{ env.BRANCH_NAME }}
+          gh pr create \
+            --title "feat: ${{ github.event.inputs.issue_title }} (Closes #${{ env.ISSUE_NUM }})" \
+            --body "Automated PR for #${{ env.ISSUE_NUM }}\n\n${{ github.event.inputs.issue_body }}\n\n---\n*By AI DevOps Orchestrator*" \
+            --base master \
+            --head ${{ env.BRANCH_NAME }}
+
+      - name: Discord 알림 (선택)
+        if: github.event.inputs.discord_reply_url != ''
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d "{\"content\": \"🎉 **개발 완료 및 PR 발행!**\n이슈: #${{ env.ISSUE_NUM }}\n결과 확인: ${{ github.server_url }}/${{ github.repository }}/pulls\"}" \
+            ${{ github.event.inputs.discord_reply_url }}

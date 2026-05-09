@@ -9,10 +9,9 @@ services:
   langchain-api:
     image: ai-devops-orchestrator/langchain-api:latest
     build:
-      context: ./services/langchain-api
+      context: ./services/langchain_api
       dockerfile: Dockerfile
     container_name: ai-devops-langchain-api
-    profiles: ["legacy-demo"]
     ports:
       - "${LANGCHAIN_API_PORT:-8000}:8000"
     environment:
@@ -43,7 +42,7 @@ services:
       - ENABLE_METRICS=${ENABLE_METRICS:-true}
 
     volumes:
-      - ./services/langchain-api:/app
+      - ./services/langchain_api:/app
       - langchain_logs:/app/logs
     depends_on:
       - chromadb
@@ -115,7 +114,6 @@ services:
   chromadb:
     image: chromadb/chroma:latest
     container_name: ai-devops-chromadb
-    profiles: ["legacy-demo"]
     ports:
       - "${CHROMADB_PORT:-8001}:8000"
     environment:
@@ -140,7 +138,6 @@ services:
   redis:
     image: redis:7-alpine
     container_name: ai-devops-redis
-    profiles: ["legacy-demo"]
     ports:
       - "${REDIS_PORT:-6379}:6379"
     command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
@@ -148,26 +145,18 @@ services:
       - redis_data:/data
     networks:
       - ai-devops-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   # =============================================================================
   # Database (PostgreSQL for n8n)
   # =============================================================================
   postgres:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     container_name: ai-devops-postgres
     profiles: ["legacy-demo"]
     environment:
-      - POSTGRES_DB=n8n
       - POSTGRES_USER=n8n
       - POSTGRES_PASSWORD=n8n_password
-      - POSTGRES_NON_ROOT_USER=n8n
-      - POSTGRES_NON_ROOT_PASSWORD=n8n_password
+      - POSTGRES_DB=n8n
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -179,123 +168,22 @@ services:
       timeout: 10s
       retries: 3
 
-  # =============================================================================
-  # Monitoring & Observability (Optional)
-  # =============================================================================
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: ai-devops-prometheus
-    ports:
-      - "${PROMETHEUS_PORT:-9090}:9090"
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.retention.time=200h'
-      - '--web.enable-lifecycle'
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus_data:/prometheus
-    networks:
-      - ai-devops-network
-    restart: unless-stopped
-    profiles: ["monitoring"]
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: ai-devops-grafana
-    ports:
-      - "${GRAFANA_PORT:-3001}:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
-      - GF_USERS_ALLOW_SIGN_UP=false
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
-    depends_on:
-      - prometheus
-    networks:
-      - ai-devops-network
-    restart: unless-stopped
-    profiles: ["monitoring"]
-
-  # =============================================================================
-  # Log Aggregation (Optional)
-  # =============================================================================
-  elasticsearch:
-    image: elasticsearch:8.11.0
-    container_name: ai-devops-elasticsearch
-    environment:
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - xpack.security.enabled=false
-    ports:
-      - "${ELASTICSEARCH_PORT:-9200}:9200"
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
-    networks:
-      - ai-devops-network
-    restart: unless-stopped
-    profiles: ["logging"]
-
-  kibana:
-    image: kibana:8.11.0
-    container_name: ai-devops-kibana
-    ports:
-      - "${KIBANA_PORT:-5601}:5601"
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    depends_on:
-      - elasticsearch
-    networks:
-      - ai-devops-network
-    restart: unless-stopped
-    profiles: ["logging"]
-
-  logstash:
-    image: logstash:8.11.0
-    container_name: ai-devops-logstash
-    volumes:
-      - ./monitoring/logstash/pipeline:/usr/share/logstash/pipeline:ro
-    ports:
-      - "${LOGSTASH_PORT:-5044}:5044"
-    environment:
-      - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
-    depends_on:
-      - elasticsearch
-    networks:
-      - ai-devops-network
-    restart: unless-stopped
-    profiles: ["logging"]
-
-# =============================================================================
-# Networks
-# =============================================================================
 networks:
   ai-devops-network:
     name: ai-devops-network
     driver: bridge
 
-# =============================================================================
-# Persistent Volumes
-# =============================================================================
 volumes:
-  # Core data
-  chromadb_data:
-    name: ai-devops-chromadb-data
-  postgres_data:
-    name: ai-devops-postgres-data
-  redis_data:
-    name: ai-devops-redis-data
-  n8n_data:
-    name: ai-devops-n8n-data
-
-  # Logs
   langchain_logs:
     name: ai-devops-langchain-logs
+  n8n_data:
+    name: ai-devops-n8n-data
+  chromadb_data:
+    name: ai-devops-chromadb-data
+  redis_data:
+    name: ai-devops-redis-data
+  postgres_data:
+    name: ai-devops-postgres-data
 
   # Monitoring (optional)
   prometheus_data:

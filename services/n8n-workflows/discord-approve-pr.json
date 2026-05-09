@@ -1,0 +1,94 @@
+{
+  "name": "Discord PR Approval Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "discord-approve",
+        "options": {}
+      },
+      "name": "Discord Approve Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [250, 300],
+      "webhookId": "discord-approve-hook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"body\"][\"command\"]}}",
+              "operation": "equal",
+              "value2": "approve"
+            }
+          ]
+        }
+      },
+      "name": "Is Approve Command",
+      "type": "n8n-nodes-base.if",
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://langchain-api:8000/pr/approve",
+        "options": {},
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "bodyParametersJson": "={ \"project\": \"{{$json[\\\"body\\\"][\\\"project\\\"]}}\", \"pr_number\": {{$json[\\\"body\\\"][\\\"pr\\\"]}}, \"decision\": \"approve\" }"
+      },
+      "name": "Call Conductor Approve",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$json[\"body\"][\"discord_reply_url\"]}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "bodyParametersJson": "{\"content\": \"🚀 **PR 승인 및 머지 완료!** 운영 환경으로 배포가 시작되었습니다.\"}"
+      },
+      "name": "Reply Success to Discord",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [850, 200]
+    }
+  ],
+  "connections": {
+    "Discord Approve Webhook": {
+      "main": [
+        [
+          {
+            "node": "Is Approve Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Approve Command": {
+      "main": [
+        [
+          {
+            "node": "Call Conductor Approve",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Conductor Approve": {
+      "main": [
+        [
+          {
+            "node": "Reply Success to Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

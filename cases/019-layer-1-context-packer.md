@@ -4,14 +4,27 @@ title: Layer 1 컨텍스트 패커 실체화 — 과거 사고 사례 주입
 date: 2026-05-05
 project: gwangcheon-shop
 actor_involved: [user]
-state: resolved
+state: decided-implement
 related_pr: 
-related_components: [layer-1-context]
+related_components: [layer-1-context, chromadb]
 ---
 
 # Case 019 — Layer 1 컨텍스트 패커 실체화 — 과거 사고 사례 주입
 
-**TL;DR.** Claude Code가 작업 시작 시 과거의 회귀 사고 사례를 프롬프트에 자동 첨부할 수 있도록 Layer 1 (컨텍스트 패커) API를 구현함. 파일 경로 기반 매칭을 통해 Case #012(의존성), Case #013(테스트) 등의 위험을 사전에 경고함으로써 동일 실수의 반복을 차단함.
+**TL;DR.** Claude Code가 작업 시작 시 과거의 회귀 사고 사례를 프롬프트에 자동 첨부할 수 있도록 Layer 1 (컨텍스트 패커) API를 실체화함. 하드코딩된 로직을 버리고 실제 ChromaDB 벡터 검색을 통해 동적이고 정밀한 컨텍스트 주입을 구현함.
+
+## 5. 결정 (Materialization Plan)
+
+- [x] (a) decided-implement: 하드코딩 제거 및 ChromaDB 정밀 검색 도입.
+- [ ] (b) 검증 완료(✅)를 위한 기준 설정 (아래).
+
+### 검증 기준 (Definition of Done for ✅)
+1. **동적 검색**: \`cases/\`에 새 파일을 추가하고 \`index_cases.py\` 실행 후, 해당 키워드로 호출 시 즉시 검색되어야 함.
+2. **비교 검증**: 검색 결과가 없을 때(✅ 안전 안내) vs 있을 때(⚠️ 경고 및 맥락 제공)의 출력이 명확히 구분되어야 함.
+3. **학습 로그**: 위 검증 과정을 수행한 결과가 \`cases/\`에 1건 이상 기록되어야 함.
+
+## 7. 학습 (ChromaDB 인덱싱 대상)
+...
 
 
 ## 1. 무슨 일이 있었나 (사실)

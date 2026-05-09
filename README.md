@@ -2,31 +2,40 @@
 
 > **포지션**: Claude Code(생성) → Antigravity(검증) → 사용자(승인) 세 액터를 잇는 **지휘자(conductor)**.
 > 코드를 직접 만들지 않고, 액터 사이의 컨텍스트·상태·게이트·학습을 매개합니다.
+> *(현재 척추 단계: 인프라 및 자동화 파이프라인 우선 구축 중)*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status](https://img.shields.io/badge/status-case--driven%20bootstrap-orange)](#현재-상태)
+[![Status](https://img.shields.io/badge/status-case--driven%20materialization-orange)](#현재-상태)
 
 ## 현재 상태
 
-이 저장소는 **케이스 주도 부트스트랩** 단계입니다. 척추(문서·스펙·게이트 정의)는 잡혔고, 컴포넌트 코드는 `cases/`에 실제 발생 근거가 쌓일 때마다 한 조각씩 추가됩니다.
+이 저장소는 **케이스 주도 실체화** 단계입니다. 컴포넌트는 우선순위 및 의존성에 따라 순차적으로 구현됩니다.
 
-| 영역 | 상태 |
-|------|------|
-| 운영 규칙 (`CLAUDE.md`) | ✅ 확정 |
-| 지휘자 5-레이어 아키텍처 (`docs/ARCHITECTURE.md`) | ✅ 확정 |
-| 승인 상태머신 (`docs/PIPELINE_STATES.md`) | ✅ 스펙 확정 / ❌ 미구현 |
-| 케이스 로그 (`cases/`) | ✅ 워크플로우 시동 (case #000 resolved) |
-| FastAPI `/analyze` 키워드 매칭 데모 | ⚠️ 기존 코드 잔존 (기본 활성 — 지휘자 모델 통합 중) |
-| Layer 1 컨텍스트 패커 | ✅ 구현 완료 (과거 사례 기반 컨텍스트 주입) |
-| Layer 2 트리아지 라우터 | 🤖 자동화 완료 (사건 자동 박제 파이프라인) |
-| Layer 3 컨텍스트 패킹 | ❌ 미구현 |
-| Layer 4 검증 게이트 | ✅ 구현 및 gwangcheon-shop 연동 완료 |
-| Layer 5 승인+배포 게이트 | ❌ 미구현 |
-| ChromaDB 환류 루프 | ✅ 기초 통합 완료 (Layer 1 검색 및 Layer 4 분석 활용) |
-| 테스트 (`tests/`) | 🟡 기초 유닛 테스트 도입 |
-| 최소 CI (ruff + compose + yaml) | ✅ PR-only 트리거 |
+### [1순위] 기반 레이어 (의존성 하단)
+| 영역 | 상태 | 비고 |
+|------|------|------|
+| 운영 규칙 (`CLAUDE.md`) | ✅ 확정 | 액터 경계 및 작업 원칙 |
+| 지휘자 5-레이어 아키텍처 | ✅ 확정 | `docs/ARCHITECTURE.md` |
+| ChromaDB 환류 루프 | 🟡 기초 통합 | 인덱싱 자동화 완료, API 검색 연동됨 |
+| Layer 2 트리아지 라우터 | 🤖 자동화 완료 | 위성 프로젝트 사고 자동 수신 및 박제 |
 
-> 본 저장소는 **이전 버전(README 기준)에서 "AI 6개 에이전트가 자동 분석·수정 PR을 만든다"는 모델**을 폐기했습니다. 그 모델은 Claude Code(생성)·Antigravity(검증) 역할과 정면으로 충돌합니다. 자세한 폐기 결정은 [`cases/000-bootstrap.md`](./cases/000-bootstrap.md), 컴포넌트 매트릭스는 [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) 참조.
+### [2순위] 기능 레이어 (기반 위에서 동작)
+| 영역 | 상태 | 비고 |
+|------|------|------|
+| Layer 1 컨텍스트 패커 | 🏗️ 실체화 진행 중 | API 검색 연동 완료, 검색 품질 및 가드레일 검증 필요 |
+| Layer 3 컨텍스트 패킹 | 🏗️ 실체화 진행 중 | PR 코멘트 연동 완료, 맥락 추출 로직 고도화 필요 |
+| 단계 0 기획 에이전트 | ✅ 시동 | Gemini CLI 기반 자율 개선 이슈 제안 |
+
+### [3순위] 완성 레이어 (검증 및 승인)
+| 영역 | 상태 | 비고 |
+|------|------|------|
+| Layer 4 검증 게이트 | 🏗️ 실체화 진행 중 | gwangcheon-shop CI 연동, 장애 패턴 분석 고도화 필요 |
+| 승인 상태머신 스펙 | ✅ 확정 | `docs/PIPELINE_STATES.md` |
+| Layer 5 승인+배포 게이트 | ❌ 미구현 | 사용자 승인 기반 배포 통제 |
+| 테스트 (`tests/`) | 🟡 기초 유닛 테스트 도입 | 주요 스크립트 무결성 검증 |
+
+> 본 저장소는 **이전 버전에서 "AI 6개 에이전트가 자동 분석·수정 PR을 만든다"는 모델**을 폐기했습니다. 자세한 폐기 결정은 [`cases/000-bootstrap.md`](./cases/000-bootstrap.md) 참조.
+
 
 ## 작업 원칙
 
@@ -38,11 +47,12 @@
 
 | ✅ 만든다 | ❌ 만들지 않는다 |
 |---|---|
-| 컨텍스트 패커 (과거 사례 자동 주입) | AI가 자동으로 수정 PR 생성 (Claude Code와 충돌) |
-| 승인 상태머신 (`created → … → observed`) | 자체 코드 품질 룰 엔진 (Antigravity와 중복) |
-| 트리아지 라우터 (알림 분류) | 자체 보안 스캐너 (Antigravity와 중복) |
-| 런타임 → ChromaDB → 다음 작업 환류 루프 | 사용자 승인 없는 운영 배포 |
-| 배포 오케스트레이션 + 자동 롤백 | 투기적 기능 (아직 케이스 없는) |
+| 컨텍스트 패커 (과거 사례 자동 주입) | 자체 코드 품질 룰 엔진 (Antigravity와 중복) |
+| 승인 상태머신 (`created → … → observed`) | 자체 보안 스캐너 (Antigravity와 중복) |
+| 트리아지 라우터 (알림 분류) | 사용자 승인 없는 운영 배포 |
+| 런타임 → ChromaDB → 다음 작업 환류 루프 | 투기적 기능 (아직 케이스 없는) |
+| 배포 오케스트레이션 + 자동 롤백 |  |
+| 풀 루프 자동화 (에이전트 구동) | |
 
 ## 문서 맵
 

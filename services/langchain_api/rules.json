@@ -1,0 +1,18 @@
+[
+    {
+        "event_type": "build",
+        "status": "failure",
+        "pattern": ["frozen", "pnpm-lock.yaml"],
+        "decision": "fail",
+        "reason": "pnpm-lock.yaml이 package.json과 동기화되지 않았습니다 (Case #012 패턴)",
+        "suggested_actions": ["pnpm install --lockfile-only 실행 후 커밋하세요"]
+    },
+    {
+        "event_type": "smoke",
+        "status": "failure",
+        "pattern": [],
+        "decision": "fail",
+        "reason": "운영 환경 스모크 테스트 실패 (Case #013 패턴)",
+        "suggested_actions": ["scripts/smoke.sh 경로 및 운영 URL 응답을 확인하세요"]
+    }
+]
