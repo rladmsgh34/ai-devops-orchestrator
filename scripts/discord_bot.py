@@ -21,12 +21,24 @@ class ConductorBot(discord.Client):
         self.tree = app_commands.CommandTree(self)
 
     async def setup_hook(self):
-        if GUILD_ID:
-            guild = discord.Object(id=GUILD_ID)
-            self.tree.copy_global_to(guild=guild)
-            await self.tree.sync(guild=guild)
-        else:
-            await self.tree.sync()
+        try:
+            if GUILD_ID:
+                guild = discord.Object(id=int(GUILD_ID))
+                # 1. 기존 명령어 초기화 (충돌 방지)
+                self.tree.clear_commands(guild=guild)
+                self.tree.copy_global_to(guild=guild)
+                logger.info(f"🔄 서버(ID: {GUILD_ID}) 명령 리스트 초기화 및 재등록 중...")
+                await self.tree.sync(guild=guild)
+            else:
+                self.tree.clear_commands(guild=None)
+                logger.info("🔄 글로벌 명령 리스트 초기화 및 재등록 중...")
+                await self.tree.sync()
+            logger.info("✅ 명령 동기화 완료! (/develop, /setup, /status 사용 가능)")
+        except discord.errors.Forbidden as e:
+            logger.error(f"❌ 권한 부족으로 명령을 동기화할 수 없습니다: {e}")
+            logger.error("💡 봇 초대 시 'applications.commands' 스코프를 포함했는지 확인하세요.")
+        except Exception as e:
+            logger.error(f"❌ 동기화 중 오류 발생: {e}")
 
 client = ConductorBot()
 
@@ -78,22 +90,28 @@ async def setup(interaction: discord.Interaction):
     await interaction.response.send_message("🛠️ 지휘자 환경을 구축 중입니다...")
     await setup_conductor_channels(interaction.guild)
     await interaction.edit_original_response(content="✅ 지휘자 환경(채널 및 웹훅) 구축이 완료되었습니다!")
+
+@client.tree.command(name="develop", description="지휘자에게 자율 개발 미션을 부여합니다.")
 @app_commands.describe(title="이슈 제목", body="상세 구현 요구사항")
 async def develop(interaction: discord.Interaction, title: str, body: str):
     """Discord /develop 명령어 처리"""
-    await interaction.response.defer() # 시간이 걸릴 수 있으므로 '생각 중...' 상태로 전환
+    await develop_logic(interaction, title, body)
 
-    # 1. 지휘자 API 호출
+@client.tree.command(name="new", description="[Alias] 지휘자에게 자율 개발 미션을 부여합니다.")
+@app_commands.describe(title="이슈 제목", body="상세 구현 요구사항")
+async def new_alias(interaction: discord.Interaction, title: str, body: str):
+    """Discord /new 명령어 처리 (하위 호환성용)"""
+    await develop_logic(interaction, title, body)
+
+async def develop_logic(interaction: discord.Interaction, title: str, body: str):
+    await interaction.response.defer()
+    
     payload = {
         "command": "develop",
         "issue_title": title,
         "issue_body": body,
-        "discord_reply_url": interaction.followup.display_message().jump_url # 알림을 보낼 위치 (또는 웹훅 URL)
+        "discord_reply_url": interaction.followup.display_message().jump_url if interaction.followup.display_message() else None
     }
-    
-    # 실제로는 interaction.followup을 통해 나중에 결과를 보낼 것이므로 
-    # API 서버에 interaction의 정보를 전달할 수 있는 구조가 필요함.
-    # 여기서는 간단하게 API 호출 결과만 먼저 응답.
     
     try:
         response = requests.post(f"{API_URL}/agent/trigger", json=payload, timeout=10)
@@ -105,7 +123,6 @@ async def develop(interaction: discord.Interaction, title: str, body: str):
                 color=discord.Color.blue()
             )
             embed.add_field(name="과거 사례 주입", value="✅ 완료" if result.get("context_injected") == "success" else "➖ 없음")
-            embed.set_footer(text="GitHub Actions를 통해 작업이 진행됩니다. 완료 시 알림이 전송됩니다.")
             await interaction.followup.send(embed=embed)
         else:
             await interaction.followup.send(f"❌ API 오류: {response.status_code}")
