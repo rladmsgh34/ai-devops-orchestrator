@@ -33,8 +33,51 @@ client = ConductorBot()
 @client.event
 async def on_ready():
     logger.info(f"🤖 지휘자 Discord 봇 로그인 완료: {client.user}")
+    
+    # 채널 자동 관리 로직
+    if GUILD_ID:
+        guild = client.get_guild(int(GUILD_ID))
+        if guild:
+            await setup_conductor_channels(guild)
 
-@client.tree.command(name="develop", description="지휘자에게 자율 개발 미션을 부여합니다.")
+async def setup_conductor_channels(guild):
+    """지휘자 운영을 위한 채널 및 웹훅 자동 설정"""
+    required_channels = {
+        "지휘-통제실": "자율 개발 명령(/develop)을 내리는 곳입니다.",
+        "결과-보고": "지휘자의 작업 결과(PR 생성 등)가 보고되는 곳입니다.",
+        "사고-기록": "과거 사고 사례 및 분석 로그가 기록되는 곳입니다."
+    }
+    
+    existing_channels = {c.name: c for c in guild.text_channels}
+    
+    for name, desc in required_channels.items():
+        if name not in existing_channels:
+            logger.info(f"🔨 채널 생성 중: #{name}")
+            category = discord.utils.get(guild.categories, name="CONDUCTOR")
+            if not category:
+                category = await guild.create_category("CONDUCTOR")
+            
+            new_channel = await guild.create_text_channel(name, topic=desc, category=category)
+            existing_channels[name] = new_channel
+            
+    # 결과-보고 채널에 웹훅 자동 생성
+    report_channel = existing_channels["결과-보고"]
+    webhooks = await report_channel.webhooks()
+    if not webhooks:
+        webhook = await report_channel.create_webhook(name="Conductor Reporting Webhook")
+        logger.info(f"✅ 웹훅 생성 완료! GitHub Secrets (DISCORD_WEBHOOK)에 등록하세요: {webhook.url}")
+        # 이 정보를 관리자에게 DM으로 보내거나 콘솔에 출력
+        print(f"\n{'='*60}\n[ACTION REQUIRED] GitHub Secrets (DISCORD_WEBHOOK) 에 다음 URL을 등록하세요:\n{webhook.url}\n{'='*60}\n")
+    else:
+        logger.info(f"ℹ️ 기존 웹훅 사용 가능: {webhooks[0].url}")
+
+@client.tree.command(name="setup", description="지휘자 전용 채널 및 환경을 자동으로 구축합니다.")
+@app_commands.checks.has_permissions(administrator=True)
+async def setup(interaction: discord.Interaction):
+    """수동으로 환경 구축 실행"""
+    await interaction.response.send_message("🛠️ 지휘자 환경을 구축 중입니다...")
+    await setup_conductor_channels(interaction.guild)
+    await interaction.edit_original_response(content="✅ 지휘자 환경(채널 및 웹훅) 구축이 완료되었습니다!")
 @app_commands.describe(title="이슈 제목", body="상세 구현 요구사항")
 async def develop(interaction: discord.Interaction, title: str, body: str):
     """Discord /develop 명령어 처리"""
