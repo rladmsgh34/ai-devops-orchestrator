@@ -71,8 +71,19 @@ jobs:
             --head ${{ env.BRANCH_NAME }}
 
       - name: Discord 알림 (선택)
-        if: github.event.inputs.discord_reply_url != ''
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          curl -X POST -H "Content-Type: application/json" \
-            -d "{\"content\": \"🎉 **개발 완료 및 PR 발행!**\n이슈: #${{ env.ISSUE_NUM }}\n결과 확인: ${{ github.server_url }}/${{ github.repository }}/pulls\"}" \
-            ${{ github.event.inputs.discord_reply_url }}
+          # 입력받은 URL이 있으면 그것을 쓰고, 없으면 시크릿의 웹훅 사용
+          TARGET_URL="${{ github.event.inputs.discord_reply_url }}"
+          if [ -z "$TARGET_URL" ]; then
+            TARGET_URL="$DISCORD_WEBHOOK"
+          fi
+          
+          if [ ! -z "$TARGET_URL" ]; then
+            curl -X POST -H "Content-Type: application/json" \
+              -d "{\"content\": \"🎉 **개발 완료 및 PR 발행!**\n이슈: #${{ env.ISSUE_NUM }}\n결과 확인: ${{ github.server_url }}/${{ github.repository }}/pulls\"}" \
+              $TARGET_URL
+          else
+            echo "Discord 알림 URL이 설정되지 않아 건너뜁니다."
+          fi
