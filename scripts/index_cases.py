@@ -5,9 +5,8 @@ import chromadb
 from pathlib import Path
 
 # ChromaDB 설정
-CHROMA_HOST = os.getenv("CHROMADB_HOST") or "localhost"
-CHROMA_PORT = int(os.getenv("CHROMADB_PORT") or 8000)
-COLLECTION_NAME = os.getenv("CHROMADB_COLLECTION_NAME") or "devops_knowledge"
+CHROMA_PATH = os.getenv("CHROMA_PATH", "./chroma_db")
+COLLECTION_NAME = os.getenv("CHROMADB_COLLECTION_NAME", "devops_knowledge")
 
 def parse_case_file(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
@@ -27,10 +26,10 @@ def parse_case_file(file_path):
     return {}, content.strip()
 
 def index_cases():
-    print(f"🤖 ChromaDB 인덱싱 시작: {COLLECTION_NAME}")
+    print(f"🤖 ChromaDB 로컬 인덱싱 시작: {COLLECTION_NAME}")
     
     try:
-        client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+        client = chromadb.PersistentClient(path=CHROMA_PATH)
         collection = client.get_or_create_collection(name=COLLECTION_NAME)
     except Exception as e:
         print(f"❌ ChromaDB 연결 실패: {e}")
@@ -54,10 +53,12 @@ def index_cases():
         metadata["id"] = str(case_id)
         metadata["source"] = case_file.name
         
-        # 리스트 형태의 메타데이터를 문자열로 변환 (ChromaDB 제약)
+        # 리스트 형태의 메타데이터 및 날짜 등을 문자열로 변환 (ChromaDB 제약)
         for key, value in metadata.items():
-            if isinstance(value, list):
-                metadata[key] = ",".join(map(str, value))
+            if isinstance(value, (list, dict)):
+                metadata[key] = str(value)
+            elif not isinstance(value, (str, int, float, bool)) and value is not None:
+                metadata[key] = str(value)
         
         # 문서 추가 (id가 같으면 덮어씀)
         collection.upsert(

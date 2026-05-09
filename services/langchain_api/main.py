@@ -14,8 +14,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # ChromaDB 설정
-CHROMA_HOST = os.getenv("CHROMADB_HOST", "localhost")
-CHROMA_PORT = int(os.getenv("CHROMADB_PORT", 8000))
+CHROMA_PATH = os.getenv("CHROMA_PATH", "./chroma_db")
 COLLECTION_NAME = os.getenv("CHROMADB_COLLECTION_NAME", "devops_knowledge")
 
 # Lazy loading for ChromaDB
@@ -26,9 +25,10 @@ def get_chroma_collection():
     global _chroma_client, _collection
     if _collection is None:
         try:
-            _chroma_client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+            # HttpClient 대신 PersistentClient 사용 (로컬 파일 저장 방식)
+            _chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
             _collection = _chroma_client.get_or_create_collection(name=COLLECTION_NAME)
-            logger.info(f"ChromaDB 연결 성공: {COLLECTION_NAME}")
+            logger.info(f"ChromaDB 로컬 DB 연결 성공 (경로: {CHROMA_PATH})")
         except Exception as e:
             logger.error(f"ChromaDB 연결 실패: {e}")
             return None
@@ -110,8 +110,8 @@ async def context_pack(request: ContextPackRequest):
     if results and results['documents'] and results['documents'][0]:
         for i, doc in enumerate(results['documents'][0]):
             distance = results['distances'][0][i] if 'distances' in results else 0
-            # 유사도 임계값 체크 (0.7 이내인 경우만 채택)
-            if distance < 1.2:  # HttpClient의 경우 거리가 멀수록 숫자가 큼
+            # 유사도 임계값 완화 (MiniLM 모델 특성 고려)
+            if distance < 1.5:  
                 case_id = results['ids'][0][i]
                 findings.append(f"### 🚩 과거 관련 사례 [{case_id}]\n{doc[:500]}...")
                 case_ids.append(case_id)
