@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # AI DevOps Orchestrator - 레이어별 기능 테스트 스크립트
-# Layer 1, 3, 4 기능을 테스트합니다
+# Layer 1, 3, 4, 5 기능을 테스트합니다
 
 set -euo pipefail
 
-API_URL="http://localhost:8000"
+API_URL="http://localhost:8002"
 
 echo "🤖 지휘자 모델 레이어 테스트"
 echo "======================================"

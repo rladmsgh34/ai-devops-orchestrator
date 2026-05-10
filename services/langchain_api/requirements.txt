@@ -14,6 +14,7 @@ anthropic
 
 # Vector Database
 chromadb==0.4.18
+numpy<2.0.0
 
 # HTTP & API
 httpx>=0.25.2

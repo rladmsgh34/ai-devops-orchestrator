@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-API_URL="http://localhost:8000"
+API_URL="http://localhost:8002"
 
 echo "🤖 Layer 5 관찰 및 학습 루프 테스트"
 echo "======================================"
@@ -67,4 +67,4 @@ curl -s -X POST "$API_URL/learn/record" \
   }' | jq '.'
 
 echo
-echo "✅ Layer 5 관찰 및 학습 루프 테스트 스크립트 작성 완료!"
+echo "✅ Layer 5 관찰 및 학습 루프 테스트 완료!"
