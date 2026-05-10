@@ -1,0 +1,94 @@
+{
+  "name": "Discord Full Loop Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "discord-command",
+        "options": {}
+      },
+      "name": "Discord Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [250, 300],
+      "webhookId": "discord-command-hook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"body\"][\"command\"]}}",
+              "operation": "equal",
+              "value2": "develop"
+            }
+          ]
+        }
+      },
+      "name": "Check Command",
+      "type": "n8n-nodes-base.if",
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://langchain-api:8000/agent/trigger",
+        "options": {},
+        "bodyParametersJson": "={{$json[\"body\"]}}",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json"
+      },
+      "name": "Trigger Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$json[\"body\"][\"discord_reply_url\"]}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "bodyParametersJson": "{\"content\": \"✅ 작업을 시작합니다. 지휘자가 에이전트를 호출했습니다.\"}"
+      },
+      "name": "Reply to Discord",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [850, 200]
+    }
+  ],
+  "connections": {
+    "Discord Webhook": {
+      "main": [
+        [
+          {
+            "node": "Check Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Command": {
+      "main": [
+        [
+          {
+            "node": "Trigger Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger Agent": {
+      "main": [
+        [
+          {
+            "node": "Reply to Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

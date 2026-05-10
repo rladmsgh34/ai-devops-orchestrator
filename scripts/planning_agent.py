@@ -1,35 +1,25 @@
 #!/usr/bin/env python3
-import subprocess
 import sys
-import json
 import os
+import requests
+import subprocess
+
+# 설정
+API_URL = os.getenv("CONDUCTOR_API_URL", "http://localhost:8000")
 
 def run_planning_analysis():
-    print("🤖 기획 에이전트 가동: 저장소 상태 분석 중...")
-    
-    # 지휘자 모델의 규칙과 현재 케이스 상황을 프롬프트로 전달
-    prompt = """
-    너는 AI DevOps Orchestrator의 '기획 에이전트'야.
-    현재 저장소의 README.md, ARCHITECTURE.md, 그리고 cases/ 폴더의 최근 사례들을 분석해서
-    다음 '광천샵(gwangcheon-shop)' 개선을 위해 가장 시급한 작업 3가지를 제안해줘.
-    
-    분석 기준:
-    1. 최근 발생한 장애(Case #012, #013)와 연관된 예방 조치
-    2. 지휘자 모델의 5개 레이어 중 아직 미구현된 부분의 우선순위
-    3. 문서와 실체 사이의 괴리(Honesty) 수정
-    
-    형식:
-    각 제안은 GitHub Issue 제목과 본문(Markdown) 형태로 작성해줘.
     """
-    
-    # Gemini CLI 호출 (여기서는 시뮬레이션 또는 실제 CLI 호출 로직)
-    # 실제 환경에서는 `gemini "prompt"` 형식을 사용
-    print("-" * 40)
-    print("Gemini CLI 분석 결과 제안 (Draft):")
-    print("-" * 40)
-    
-    # 시뮬레이션 결과 출력 (실제 구현 시에는 subprocess.run(["gemini", prompt]) 등 사용)
-    proposal = """
+    기존 Gemini CLI 분석 placeholder 기능과 API 호출 기능을 통합합니다.
+    """
+    if len(sys.argv) > 1:
+        # 인자가 있으면 API 호출 모드로 동작
+        main_api_mode()
+    else:
+        # 인자가 없으면 분석 제안 모드로 동작 (Simulation)
+        print("🤖 기획 에이전트 가동: 저장소 상태 분석 중...")
+        
+        # 분석 결과 제안 (Draft)
+        proposal = """
 ### [PROPOSAL 1] gwangcheon-shop 배포 전 'pnpm lock' 무결성 검증 자동화
 **본문**: Case #012의 재발 방지를 위해, PR 단계에서 Layer 4 게이트를 호출하여 lock 파일 동기화 여부를 강제해야 합니다.
 
@@ -38,10 +28,46 @@ def run_planning_analysis():
 
 ### [PROPOSAL 3] API 명세 내 'Planned' 엔드포인트 실체화 로드맵
 **본문**: docs/API_REFERENCE.md에 적힌 계획된 API들의 우선순위를 정하고 첫 번째 구현 대상을 확정해야 합니다.
-    """
-    print(proposal)
-    print("-" * 40)
-    print("위 제안 중 정식 이슈로 등록할 번호를 선택하거나 'all'을 입력하세요 (또는 q로 종료).")
+        """
+        print("-" * 40)
+        print("Gemini CLI 분석 결과 제안 (Draft):")
+        print("-" * 40)
+        print(proposal)
+        print("-" * 40)
+        print("작업을 시작하려면 다음과 같이 실행하세요:")
+        print("  planning_agent.py \"제목\" \"본문\"")
+
+def main_api_mode():
+    if len(sys.argv) < 3:
+        print("Usage: planning_agent.py <title> <body> [discord_reply_url]")
+        sys.exit(1)
+
+    title = sys.argv[1]
+    body = sys.argv[2]
+    discord_url = sys.argv[3] if len(sys.argv) > 3 else None
+    
+    print(f"🚀 지휘자 API를 통해 자율 개발 요청 중: {title}")
+
+    payload = {
+        "command": "develop",
+        "issue_title": title,
+        "issue_body": body,
+        "discord_reply_url": discord_url
+    }
+
+    try:
+        response = requests.post(f"{API_URL}/agent/trigger", json=payload, timeout=15)
+        if response.status_code == 200:
+            result = response.json()
+            if result.get("status") == "triggered":
+                print(f"✅ 성공: {result.get('message')}")
+                print(f"🔗 GitHub Actions 탭에서 진행 상황을 확인하세요.")
+            else:
+                print(f"❌ 실패: {result.get('message')}")
+        else:
+            print(f"❌ API 오류: {response.status_code} - {response.text}")
+    except Exception as e:
+        print(f"❌ API 연결 실패: {e}")
 
 if __name__ == "__main__":
     run_planning_analysis()

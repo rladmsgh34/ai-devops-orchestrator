@@ -143,3 +143,8 @@ related_cases: [NNN, ...]  # 누적된 인스턴스 케이스 ID
 | 021 | CONTRIBUTING.md 예제 코드와 실체 괴리 | ✅ | `CONTRIBUTING.md` 구버전 예제 코드 제거 및 아키텍처 동기화 |
 | 022 | Layer 5 승인 게이트 실체화 — 승인 후 배포 파이프라인 | ✅ | `/verify/approve` 엔드포인트 구현 및 승인 프로세스 코드화 완료 |
 | 023 | Layer 5 관찰 및 학습 루프 실체화 — SLI 기반 검증 및 지식 환류 | ✅ | `/verify/observe` 및 `/learn/record` 엔드포인트 구현 완료 |
+| 024 | README와 코드 실체 비대칭 사건 (Self-Audit) | ✅ | README 정정, CLAUDE.md 상태 정의 보완 및 가드 실체화 |
+| 025 | CI/CD 파이프라인 취약성 및 자동화 정체 (Self-Audit) | 🏗️ | 바이브 코딩 기반 파이프라인 고도화 진행 중 |
+| 026 | Discord 기반 풀 루프 자동화 요청 (Vibe Coding) | 🏗️ | 풀 사이클 자동화 아키텍처 재검토 및 파이프라인 설계 |
+| 027 | Discord 풀 루프 통합 및 봇 브릿지 구축 | ✅ | Discord 봇 연동 및 `/agent/trigger` 엔드포인트 구현 완료 |
+| 999 | 시스템 검증 테스트 케이스 | ✅ | 전체 파이프라인 및 레이어 통합 테스트 수행 결과 |
