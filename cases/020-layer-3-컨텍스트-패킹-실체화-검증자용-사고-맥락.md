@@ -4,14 +4,14 @@ title: Layer 3 컨텍스트 패킹 실체화 — 검증자용 사고 맥락 번�
 date: 2026-05-05
 project: gwangcheon-shop
 actor_involved: [user]
-state: open
+state: resolved
 related_pr: 
-related_components: []
+related_components: [layer-3-context]
 ---
 
 # Case 020 — Layer 3 컨텍스트 패킹 실체화 — 검증자용 사고 맥락 번들링
 
-**TL;DR.** [이슈 요약 및 핵심 통찰을 작성하세요]
+**TL;DR.** PR 검증 시점에 변경 사항과 연관된 과거 사고 사례를 ChromaDB에서 시맨틱 검색하여 'Verification Context Bundle'로 패킹하는 Layer 3 기능을 실체화함. 이를 통해 검증자가 위험도가 높은 변경 사항을 사전에 인지하고 집중 점검할 수 있는 가이드라인을 제공함.
 
 ## 1. 무슨 일이 있었나 (사실)
 

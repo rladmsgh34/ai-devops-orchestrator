@@ -1,5 +1,5 @@
 ---
-id: 012
+id: 019
 title: Layer 1 컨텍스트 패커 실체화 — 과거 사고 사례 주입
 date: 2026-05-05
 project: gwangcheon-shop

@@ -75,7 +75,7 @@ related_components: []
 
 ## 7. 학습 (ChromaDB 인덱싱 대상)
 
-[이케이스를 통해 배운 점을 한 문단으로 작성하세요]
+[이 케이스를 통해 배운 점을 한 문단으로 작성하세요]
 """
 
     with open(file_path, 'w', encoding='utf-8') as f:
@@ -94,6 +94,7 @@ related_components: []
         for i, line in enumerate(lines):
             if line.strip().startswith(f"| {next_id_int - 1:03d} |"):
                 last_index = i
+                break
         
         new_entry = f"| {next_id_str} | {title} | ⏳ | [TBD] |\n"
         
